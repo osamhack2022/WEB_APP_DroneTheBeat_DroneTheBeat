@@ -10,7 +10,7 @@ class FlightRequestPage extends StatelessWidget {
       body: ListView(
         children: [
           Text(
-            "드론 비행 허가 신청",
+            "드론 비행 허가 신청!",
             style: h5(),
             textAlign: TextAlign.center,
           ),
