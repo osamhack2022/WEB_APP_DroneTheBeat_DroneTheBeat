@@ -4,8 +4,12 @@ import 'package:helloworld/styles.dart';
 class CustomTextField extends StatelessWidget {
   final prefixText;
   final hintText;
+  final controller;
 
-  const CustomTextField({required this.prefixText, required this.hintText});
+  const CustomTextField(
+      {required this.prefixText,
+      required this.hintText,
+      required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,7 @@ class CustomTextField extends StatelessWidget {
           ),
           SizedBox(height: 5),
           TextFormField(
+            controller: controller,
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.only(top: 10, left: 20, bottom: 10),
