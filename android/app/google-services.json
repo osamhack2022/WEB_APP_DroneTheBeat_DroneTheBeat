@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "110358591512",
+    "project_id": "dronethebeat",
+    "storage_bucket": "dronethebeat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110358591512:android:8b7f749200209b4ffdab6d",
+        "android_client_info": {
+          "package_name": "com.example.helloworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110358591512-j1k3tu2v1liai9dk17rn4j93829ju15s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBD3p9lSEEfJUmMGDiiopEx7dx4IHxQPyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110358591512-j1k3tu2v1liai9dk17rn4j93829ju15s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
