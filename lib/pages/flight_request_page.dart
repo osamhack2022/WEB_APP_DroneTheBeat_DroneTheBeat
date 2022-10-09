@@ -75,12 +75,13 @@ class FlightRequestPage extends StatelessWidget {
     );
   }
 
-  Future createRequest(
-      {required String army,
-      required String model,
-      required String duration,
-      required String purpose,
-      required String flightArea}) async {
+  Future createRequest({
+    required String army,
+    required String model,
+    required String duration,
+    required String purpose,
+    required String flightArea,
+  }) async {
     final docRequest =
         FirebaseFirestore.instance.collection('flight_info').doc();
 

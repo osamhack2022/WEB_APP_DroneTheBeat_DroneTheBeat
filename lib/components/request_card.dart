@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:helloworld/pages/detail_page.dart';
 
 class RequestCard extends StatelessWidget {
+  final String model;
+  final String duration;
+  final String index;
+
+  const RequestCard({required this.model, required this.duration, required this.index});
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -17,10 +23,10 @@ class RequestCard extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: Colors.purple,
-            child: Text("111"),
+            child: Text(index),
           ),
-          title: Text("111"),
-          subtitle: Text("111"),
+          title: Text(model),
+          subtitle: Text(duration),
           trailing: const Icon(Icons.check),
         ),
       ),
