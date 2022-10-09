@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:helloworld/components/custom_text_field.dart';
+import 'package:helloworld/components/google_map_flight_area.dart';
 import 'package:helloworld/styles.dart';
 
 class FlightRequestPage extends StatelessWidget {
@@ -8,7 +9,6 @@ class FlightRequestPage extends StatelessWidget {
   final controllerModel = TextEditingController();
   final controllerDuration = TextEditingController();
   final controllerPurpose = TextEditingController();
-  final controllerFlightArea = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +41,7 @@ class FlightRequestPage extends StatelessWidget {
             hintText: "",
             controller: controllerPurpose,
           ),
-          CustomTextField(
-            prefixText: "비행 반경",
-            hintText: "",
-            controller: controllerFlightArea,
-          ),
+          GoogleMapFlightArea(),
           _buildElevatedButton(),
         ],
       ),
@@ -61,14 +57,13 @@ class FlightRequestPage extends StatelessWidget {
           final model = controllerModel.text;
           final duration = controllerDuration.text;
           final purpose = controllerPurpose.text;
-          final flightArea = controllerFlightArea.text;
 
           createRequest(
-              army: army,
-              model: model,
-              duration: duration,
-              purpose: purpose,
-              flightArea: flightArea);
+            army: army,
+            model: model,
+            duration: duration,
+            purpose: purpose,
+          );
         },
         child: Text("신청"),
       ),
@@ -80,7 +75,6 @@ class FlightRequestPage extends StatelessWidget {
     required String model,
     required String duration,
     required String purpose,
-    required String flightArea,
   }) async {
     final docRequest =
         FirebaseFirestore.instance.collection('flight_info').doc();
@@ -90,7 +84,6 @@ class FlightRequestPage extends StatelessWidget {
       'model': model,
       'duration': duration,
       'purpose': purpose,
-      'flightArea': flightArea,
     };
 
     await docRequest.set(json);
