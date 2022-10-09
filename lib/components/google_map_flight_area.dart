@@ -12,7 +12,7 @@ class GoogleMapFlightArea extends StatelessWidget {
       child: GoogleMap(
         initialCameraPosition: CameraPosition(
           target: currentLocation,
-          zoom: 14,
+          zoom: 10,
         ),
       ),
     );
