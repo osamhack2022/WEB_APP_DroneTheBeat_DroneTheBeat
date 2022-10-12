@@ -3,6 +3,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:helloworld/components/flight_area_info.dart';
 
 LatLng currentLocation = LatLng(37.5651, 126.98955);
+final Set<Marker> markers = {};
+final Set<Circle> circles = {};
 
 class FlightAreaPage extends StatefulWidget {
   @override
@@ -10,8 +12,6 @@ class FlightAreaPage extends StatefulWidget {
 }
 
 class _FlightAreaPageState extends State<FlightAreaPage> {
-  final Set<Marker> _markers = {};
-
   void _updatePosition(CameraPosition position) {
     currentLocation =
         LatLng(position.target.latitude, position.target.longitude);
@@ -19,7 +19,9 @@ class _FlightAreaPageState extends State<FlightAreaPage> {
 
   void _addMarker() {
     setState(() {
-      _markers.add(
+      markers.clear();
+      circles.clear();
+      markers.add(
         Marker(
           markerId: MarkerId(currentLocation.toString()),
           position: currentLocation,
@@ -28,6 +30,16 @@ class _FlightAreaPageState extends State<FlightAreaPage> {
             title: '주소',
             snippet: '비행 반경',
           ),
+        ),
+      );
+      circles.add(
+        Circle(
+          circleId:
+              CircleId('circle_id_${DateTime.now().millisecondsSinceEpoch}'),
+          center: currentLocation,
+          fillColor: Colors.blue.shade100.withOpacity(0.5),
+          strokeColor: Colors.blue.shade100.withOpacity(0.1),
+          radius: 200,
         ),
       );
     });
@@ -48,7 +60,8 @@ class _FlightAreaPageState extends State<FlightAreaPage> {
                     target: currentLocation,
                     zoom: 16,
                   ),
-                  markers: _markers,
+                  markers: markers,
+                  circles: circles,
                   onCameraMove: ((position) => _updatePosition(position)),
                 ),
                 Container(

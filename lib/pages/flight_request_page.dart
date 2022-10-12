@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:helloworld/components/custom_text_field.dart';
+import 'package:helloworld/components/request_page_map.dart';
 import 'package:helloworld/pages/flight_area_page.dart';
 
 import 'package:helloworld/styles.dart';
@@ -43,6 +44,7 @@ class FlightRequestPage extends StatelessWidget {
             hintText: "",
             controller: controllerPurpose,
           ),
+          RequestPageMap(),
           ElevatedButton(
             onPressed: () {
               Navigator.push(
