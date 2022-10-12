@@ -7,11 +7,27 @@ import 'package:helloworld/pages/flight_area_page.dart';
 
 import 'package:helloworld/styles.dart';
 
-class FlightRequestPage extends StatelessWidget {
+class FlightRequestPage extends StatefulWidget {
+  @override
+  State<FlightRequestPage> createState() => _FlightRequestPageState();
+}
+
+class _FlightRequestPageState extends State<FlightRequestPage> {
   final controllerArmy = TextEditingController();
+
   final controllerModel = TextEditingController();
+
   final controllerDuration = TextEditingController();
+
   final controllerPurpose = TextEditingController();
+
+  Future<void> moveToNewLocation() async {
+    LatLng newPostion = currentLocation;
+    requestPageGoogleMapController
+        .animateCamera(CameraUpdate.newLatLng(newPostion));
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +66,11 @@ class FlightRequestPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => FlightAreaPage()),
-              );
+              ).then((value) {
+                setState(() {
+                  moveToNewLocation();
+                });
+              });
             },
             child: Text("비행반경 설정"),
           ),
