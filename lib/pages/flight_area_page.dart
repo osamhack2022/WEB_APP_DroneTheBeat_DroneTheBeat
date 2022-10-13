@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../components/custom_text_field.dart';
 import '../styles.dart';
 
+final controllerDistance = TextEditingController();
 LatLng currentLocation = LatLng(37.5651, 126.98955);
 final Set<Marker> markers = {};
 final Set<Circle> circles = {};
@@ -13,7 +14,6 @@ class FlightAreaPage extends StatefulWidget {
 }
 
 class _FlightAreaPageState extends State<FlightAreaPage> {
-  final controllerDistance = TextEditingController();
   void _updatePosition(CameraPosition position) {
     currentLocation =
         LatLng(position.target.latitude, position.target.longitude);

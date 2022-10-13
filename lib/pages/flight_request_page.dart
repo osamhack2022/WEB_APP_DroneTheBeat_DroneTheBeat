@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:helloworld/components/custom_text_field.dart';
@@ -22,7 +23,8 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
   final controllerPurpose = TextEditingController();
 
   Future<void> moveToNewLocation() async {
-    LatLng newPostion = currentLocation;
+    LatLng newPostion = LatLng(markers.elementAt(0).position.latitude,
+        markers.elementAt(0).position.longitude);
     requestPageGoogleMapController
         .animateCamera(CameraUpdate.newLatLng(newPostion));
 
@@ -42,9 +44,10 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
           ),
           SizedBox(height: 15),
           CustomTextField(
-              prefixText: "비행 허가 요청 부대",
-              hintText: "",
-              controller: controllerArmy),
+            prefixText: "비행 허가 요청 부대",
+            hintText: "",
+            controller: controllerArmy,
+          ),
           CustomTextField(
             prefixText: "드론 기종",
             hintText: "",
@@ -85,17 +88,28 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: () {
-          final army = controllerArmy.text;
-          final model = controllerModel.text;
-          final duration = controllerDuration.text;
-          final purpose = controllerPurpose.text;
+          final String uid = FirebaseAuth.instance.currentUser!.uid;
+          final String army = controllerArmy.text;
+          final String model = controllerModel.text;
+          final String duration = controllerDuration.text;
+          final String purpose = controllerPurpose.text;
+          final String radius = controllerDistance.text;
+          final GeoPoint location = GeoPoint(
+              markers.elementAt(0).position.latitude,
+              markers.elementAt(0).position.longitude);
+          final bool accepted = false;
 
           createRequest(
-            army: army,
-            model: model,
-            duration: duration,
-            purpose: purpose,
-          );
+              uid: uid,
+              army: army,
+              model: model,
+              duration: duration,
+              purpose: purpose,
+              radius: radius,
+              location: location,
+              accepted: accepted);
+
+          Navigator.pop(context);
         },
         child: Text("신청"),
       ),
@@ -103,19 +117,27 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
   }
 
   Future createRequest({
+    required String uid,
     required String army,
     required String model,
     required String duration,
     required String purpose,
+    required String radius,
+    required GeoPoint location,
+    required bool accepted,
   }) async {
     final docRequest =
         FirebaseFirestore.instance.collection('flight_info').doc();
 
     final json = {
+      'uid': uid,
       'army': army,
       'model': model,
       'duration': duration,
       'purpose': purpose,
+      'radius': radius,
+      'location': location,
+      'accepted': accepted,
     };
 
     await docRequest.set(json);

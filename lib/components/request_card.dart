@@ -5,8 +5,16 @@ class RequestCard extends StatelessWidget {
   final String model;
   final String duration;
   final String index;
+  final bool accepted;
+  final String docID;
 
-  const RequestCard({required this.model, required this.duration, required this.index});
+  const RequestCard({
+    required this.model,
+    required this.duration,
+    required this.index,
+    required this.accepted,
+    required this.docID,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +25,7 @@ class RequestCard extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => DetailPage()),
+            MaterialPageRoute(builder: (context) => DetailPage(docID: docID)),
           );
         },
         child: ListTile(
@@ -27,7 +35,8 @@ class RequestCard extends StatelessWidget {
           ),
           title: Text(model),
           subtitle: Text(duration),
-          trailing: const Icon(Icons.check),
+          trailing:
+              accepted ? const Icon(Icons.check) : const Icon(Icons.close),
         ),
       ),
     );
