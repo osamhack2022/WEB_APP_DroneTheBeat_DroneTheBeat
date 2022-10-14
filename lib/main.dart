@@ -23,7 +23,12 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            return AdminHomePage();
+            if (FirebaseAuth.instance.currentUser!.uid ==
+                'jHBGhQtOR7YmWX3Zy1Bk08Yqp4y2') {
+              return AdminHomePage();
+            } else {
+              return UserHomePage();
+            }
           } else {
             return LoginPage();
           }
