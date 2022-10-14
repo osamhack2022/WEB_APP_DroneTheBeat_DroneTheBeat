@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -68,7 +69,9 @@ class DetailPage extends StatelessWidget {
             },
           ),
           SizedBox(height: 10),
-          _buildAcceptButton(context),
+          if (FirebaseAuth.instance.currentUser!.uid ==
+              'jHBGhQtOR7YmWX3Zy1Bk08Yqp4y2')
+            _buildAcceptButton(context),
         ],
       ),
     );
