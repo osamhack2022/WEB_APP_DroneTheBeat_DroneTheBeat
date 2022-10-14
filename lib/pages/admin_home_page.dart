@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:helloworld/components/request_card.dart';
+import 'package:helloworld/pages/all_flight_areas_map.dart';
 import 'package:helloworld/pages/flight_request_page.dart';
 
 class AdminHomePage extends StatelessWidget {
@@ -50,6 +51,17 @@ class AdminHomePage extends StatelessWidget {
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text("Main Page"),
+      actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AllFlightAreasMap()),
+            );
+          },
+          icon: Icon(Icons.map),
+        ),
+      ],
     );
   }
 }
