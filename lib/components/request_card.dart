@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:helloworld/pages/detail_page.dart';
+import 'package:intl/intl.dart';
 
 class RequestCard extends StatelessWidget {
   final String model;
-  final String duration;
+  final DateTime duration;
   final String index;
   final bool accepted;
   final String docID;
@@ -18,6 +19,7 @@ class RequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateFormat _dateFormat = DateFormat('y-MM-d H:mm');
     return Card(
       elevation: 4,
       margin: const EdgeInsets.all(10),
@@ -34,7 +36,7 @@ class RequestCard extends StatelessWidget {
             child: Text(index),
           ),
           title: Text(model),
-          subtitle: Text(duration),
+          subtitle: Text(_dateFormat.format(duration)),
           trailing:
               accepted ? const Icon(Icons.check) : const Icon(Icons.close),
         ),

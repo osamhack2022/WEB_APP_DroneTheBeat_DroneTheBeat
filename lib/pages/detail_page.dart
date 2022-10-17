@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 
 class DetailPage extends StatelessWidget {
   final String docID;
@@ -10,6 +11,7 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateFormat _dateFormat = DateFormat('y-MM-d H:mm');
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
@@ -27,7 +29,7 @@ class DetailPage extends StatelessWidget {
                 children: [
                   Text(snapshot.data['army']),
                   Text(snapshot.data['model']),
-                  Text(snapshot.data['duration']),
+                  Text(_dateFormat.format(snapshot.data['duration'].toDate())),
                   Text(snapshot.data['purpose']),
                   SizedBox(
                     width: double.infinity,
