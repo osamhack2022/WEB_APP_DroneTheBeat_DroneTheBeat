@@ -18,7 +18,7 @@ class AdminHomePage extends StatelessWidget {
                 .snapshots(),
             builder: (context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               }
 
               return Expanded(

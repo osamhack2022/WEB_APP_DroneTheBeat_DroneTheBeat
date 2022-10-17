@@ -9,7 +9,7 @@ class AllFlightAreasMap extends StatelessWidget {
   Future addMarkerCircles() async {
     await FirebaseFirestore.instance
         .collection('flight_info')
-        .where('accepted', whereIn: [true])
+        .where('accepted', whereIn: ['accepted'])
         .get()
         .then(
           (snapshot) => snapshot.docs.forEach(

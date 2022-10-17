@@ -145,7 +145,7 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
           final GeoPoint location = GeoPoint(
               markers.elementAt(0).position.latitude,
               markers.elementAt(0).position.longitude);
-          final bool accepted = false;
+          final String accepted = 'reviewing';
 
           createRequest(
             uid: uid,
@@ -174,7 +174,7 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
     required String purpose,
     required String radius,
     required GeoPoint location,
-    required bool accepted,
+    required String accepted,
   }) async {
     final docRequest =
         FirebaseFirestore.instance.collection('flight_info').doc();

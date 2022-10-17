@@ -88,7 +88,7 @@ class DetailPage extends StatelessWidget {
             FirebaseFirestore.instance
                 .collection('flight_info')
                 .doc(docID)
-                .update({'accepted': true});
+                .update({'accepted': 'accepted'});
             Navigator.pop(context);
           },
           child: Text('승인'),
@@ -99,7 +99,7 @@ class DetailPage extends StatelessWidget {
             FirebaseFirestore.instance
                 .collection('flight_info')
                 .doc(docID)
-                .update({'accepted': false});
+                .update({'accepted': 'declined'});
             Navigator.pop(context);
           },
           child: Text('반려'),

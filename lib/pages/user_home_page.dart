@@ -18,7 +18,7 @@ class UserHomePage extends StatelessWidget {
                 whereIn: [FirebaseAuth.instance.currentUser!.uid]).snapshots(),
             builder: (context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               }
 
               return Expanded(

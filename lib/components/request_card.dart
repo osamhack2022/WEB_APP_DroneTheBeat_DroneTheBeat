@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:helloworld/components/accept_icon.dart';
 import 'package:helloworld/pages/detail_page.dart';
 import 'package:intl/intl.dart';
 
@@ -6,7 +7,7 @@ class RequestCard extends StatelessWidget {
   final String model;
   final DateTime duration;
   final String index;
-  final bool accepted;
+  final String accepted;
   final String docID;
 
   const RequestCard({
@@ -37,8 +38,7 @@ class RequestCard extends StatelessWidget {
           ),
           title: Text(model),
           subtitle: Text(_dateFormat.format(duration)),
-          trailing:
-              accepted ? const Icon(Icons.check) : const Icon(Icons.close),
+          trailing: AcceptIcon(accepted: accepted),
         ),
       ),
     );
