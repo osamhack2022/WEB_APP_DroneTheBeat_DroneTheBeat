@@ -37,12 +37,6 @@ class UserHomePage extends StatelessWidget {
               );
             },
           ),
-          ElevatedButton(
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-            },
-            child: Text('로그아웃'),
-          ),
         ],
       ),
     );
