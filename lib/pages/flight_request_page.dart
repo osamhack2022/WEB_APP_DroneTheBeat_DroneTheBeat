@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:helloworld/components/custom_dropdown_button.dart';
 import 'package:helloworld/components/custom_text_field.dart';
 import 'package:helloworld/components/request_page_map.dart';
 import 'package:helloworld/pages/flight_area_page.dart';
 
 import 'package:helloworld/styles.dart';
+import 'package:intl/intl.dart';
 
 const List<String> armyList = <String>[
   '제1전투비행단',
@@ -29,16 +31,17 @@ const List<String> modelList = <String>[
   'PARROT ANAFI',
 ];
 
+String dropdownValueArmy = armyList.first;
+String dropdownValueModel = modelList.first;
+
 class FlightRequestPage extends StatefulWidget {
   @override
   State<FlightRequestPage> createState() => _FlightRequestPageState();
 }
 
 class _FlightRequestPageState extends State<FlightRequestPage> {
-  String dropdownValueArmy = armyList.first;
-  String dropdownValueModel = modelList.first;
   final controllerModel = TextEditingController();
-  DateTime flightDateTime = DateTime(2022);
+  DateTime? flightDateTime;
   final controllerPurpose = TextEditingController();
 
   Future<void> moveToNewLocation() async {
@@ -62,9 +65,9 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 15),
-          _buildDropdownButton('허가 요청 부대', dropdownValueArmy, armyList),
+          CustomDropdownButton(title: '허가 요청 부대', dropdownList: armyList),
           SizedBox(height: 15),
-          _buildDropdownButton('드론 기종', dropdownValueModel, modelList),
+          CustomDropdownButton(title: '드론 기종', dropdownList: modelList),
           _buildDateTimePicker(),
           CustomTextField(
             prefixText: "비행 목적",
@@ -91,51 +94,8 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
     );
   }
 
-  Widget _buildDropdownButton(
-      String title, String dropdownValueContext, List dropdownList) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              title,
-              style: overLine(),
-            ),
-          ),
-          SizedBox(height: 5),
-          Container(
-            width: double.infinity,
-            child: DropdownButton<String>(
-              value: dropdownValueContext,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
-              style: const TextStyle(color: Colors.deepPurple),
-              underline: Container(
-                height: 2,
-                color: Colors.deepPurpleAccent,
-              ),
-              onChanged: (String? value) {
-                // This is called when the user selects an item.
-                setState(() {
-                  dropdownValueContext = value!;
-                });
-              },
-              items: dropdownList.map<DropdownMenuItem<String>>((value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildDateTimePicker() {
+    DateFormat _dateFormat = DateFormat('y-MM-d H:mm');
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -157,14 +117,15 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
                   maxTime: DateTime(2023, 12, 31, 23, 59),
                   onConfirm: (date) {
                     flightDateTime = date;
+                    setState(() {});
                   },
                   locale: LocaleType.ko,
                 );
               },
-              child: Text(
-                '기간을 설정하세요',
-                style: TextStyle(color: Colors.blue),
-              )),
+              child: flightDateTime == null
+                  ? Text('기간을 설정하세요', style: TextStyle(color: Colors.blue))
+                  : Text(_dateFormat.format(flightDateTime!).toString(),
+                      style: TextStyle(color: Colors.blue))),
         ],
       ),
     );
@@ -178,7 +139,7 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
           final String uid = FirebaseAuth.instance.currentUser!.uid;
           final String army = dropdownValueArmy;
           final String model = dropdownValueModel;
-          final DateTime duration = flightDateTime;
+          final DateTime? duration = flightDateTime;
           final String purpose = controllerPurpose.text;
           final String radius = controllerDistance.text;
           final GeoPoint location = GeoPoint(
@@ -187,15 +148,17 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
           final bool accepted = false;
 
           createRequest(
-              uid: uid,
-              army: army,
-              model: model,
-              duration: duration,
-              purpose: purpose,
-              radius: radius,
-              location: location,
-              accepted: accepted);
-
+            uid: uid,
+            army: army,
+            model: model,
+            duration: duration,
+            purpose: purpose,
+            radius: radius,
+            location: location,
+            accepted: accepted,
+          );
+          markers.clear();
+          circles.clear();
           Navigator.pop(context);
         },
         child: Text("신청"),
@@ -207,7 +170,7 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
     required String uid,
     required String army,
     required String model,
-    required DateTime duration,
+    required DateTime? duration,
     required String purpose,
     required String radius,
     required GeoPoint location,
