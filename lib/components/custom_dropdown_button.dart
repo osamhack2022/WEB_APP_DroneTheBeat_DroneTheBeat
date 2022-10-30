@@ -35,6 +35,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
           Container(
             width: double.infinity,
             child: DropdownButton<String>(
+              isExpanded: true,
               value: dropdownValue,
               icon: const Icon(Icons.arrow_downward),
               elevation: 16,

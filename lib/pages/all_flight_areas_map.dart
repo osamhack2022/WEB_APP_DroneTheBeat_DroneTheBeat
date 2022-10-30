@@ -1,15 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 
-class AllFlightAreasMap extends StatelessWidget {
+class AllFlightAreasMap extends StatefulWidget {
+  @override
+  State<AllFlightAreasMap> createState() => _AllFlightAreasMapState();
+}
+
+class _AllFlightAreasMapState extends State<AllFlightAreasMap> {
   Set<Marker> _markers = {};
   Set<Circle> _circles = {};
+  DateTime date = DateTime.now();
 
-  Future addMarkerCircles() async {
+  Future _addMarkerCircles() async {
     await FirebaseFirestore.instance
         .collection('flight_info')
         .where('accepted', whereIn: ['accepted'])
+        /*.where('flightStart',
+            isLessThanOrEqualTo:
+                DateTime(date.year, date.month, date.day, 23, 59))
+        .where('flightEnd',
+            isGreaterThanOrEqualTo:
+                DateTime(date.year, date.month, date.day, 0, 0))
+        */
         .get()
         .then(
           (snapshot) => snapshot.docs.forEach(
@@ -43,21 +57,42 @@ class AllFlightAreasMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateFormat _dateFormat = DateFormat('y-MM-d');
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Flights'),
+        title: Text('전체 비행 조회'),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              DateTime? newDate = await showDatePicker(
+                context: context,
+                initialDate: date,
+                firstDate: DateTime(2022),
+                lastDate: DateTime(2030),
+              );
+
+              if (newDate == null) return;
+
+              setState(() => date = newDate);
+            },
+            child: Text(
+              _dateFormat.format(date),
+              style: TextStyle(color: Colors.white),
+            ),
+          )
+        ],
       ),
-      body: FutureBuilder(
-        future: addMarkerCircles(),
+      body: StreamBuilder(
+        stream: _addMarkerCircles().asStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
 
           return GoogleMap(
             initialCameraPosition: CameraPosition(
               target: LatLng(37.5651, 126.98955),
-              zoom: 16,
+              zoom: 14,
             ),
             markers: _markers,
             circles: _circles,

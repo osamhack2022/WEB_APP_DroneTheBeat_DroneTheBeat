@@ -1,12 +1,16 @@
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../components/custom_text_field.dart';
+import '../components/map_polygon_methods.dart';
 import '../styles.dart';
 
-final controllerDistance = TextEditingController();
-LatLng currentLocation = LatLng(37.5651, 126.98955);
+final controllerDistance = TextEditingController()..text = '200';
+LatLng currentLocation = LatLng(36.6894, 126.5228);
 final Set<Marker> markers = {};
 final Set<Circle> circles = {};
+final Set<Polygon> polygons = HashSet<Polygon>();
+final Set<LatLngBounds> latlngbounds = {};
 
 class FlightAreaPage extends StatefulWidget {
   @override
@@ -51,6 +55,22 @@ class _FlightAreaPageState extends State<FlightAreaPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < polygonPoints.length; i++) {
+      polygons.add(Polygon(
+        polygonId:
+            PolygonId('polygon_id_${DateTime.now().millisecondsSinceEpoch}'),
+        points: polygonPoints[i],
+        fillColor: Colors.red.withOpacity(0.3),
+        strokeColor: Colors.red,
+        geodesic: true,
+        strokeWidth: 2,
+      ));
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
@@ -67,6 +87,7 @@ class _FlightAreaPageState extends State<FlightAreaPage> {
                   ),
                   markers: markers,
                   circles: circles,
+                  polygons: polygons,
                   onCameraMove: ((position) => _updatePosition(position)),
                 ),
                 Container(
@@ -75,7 +96,15 @@ class _FlightAreaPageState extends State<FlightAreaPage> {
                   child: Column(
                     children: [
                       FloatingActionButton(
-                        onPressed: _addMarkerCircle,
+                        onPressed: () {
+                          final snackBar = SnackBar(
+                            content: const Text('비행반경에 비행금지구역이 포함되어있습니다.'),
+                          );
+                          circlePolygonIsOverlapped()
+                              ? ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar)
+                              : _addMarkerCircle();
+                        },
                         backgroundColor: Colors.deepPurpleAccent,
                         child: const Icon(Icons.add_location, size: 36.0),
                       ),
@@ -116,7 +145,7 @@ class _FlightAreaPageState extends State<FlightAreaPage> {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              '비행 반경(km)',
+              '비행 반경(m)',
               style: overLine(),
             ),
           ),
@@ -138,6 +167,26 @@ class _FlightAreaPageState extends State<FlightAreaPage> {
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<String?> _showAlertMessage() {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('AlertDialog Title'),
+        content: const Text('AlertDialog description'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
           ),
         ],
       ),

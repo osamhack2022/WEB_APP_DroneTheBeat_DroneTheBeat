@@ -41,7 +41,8 @@ class FlightRequestPage extends StatefulWidget {
 
 class _FlightRequestPageState extends State<FlightRequestPage> {
   final controllerModel = TextEditingController();
-  DateTime? flightDateTime;
+  DateTime? flightDateTimeStart;
+  DateTime? flightDateTimeEnd;
   final controllerPurpose = TextEditingController();
 
   Future<void> moveToNewLocation() async {
@@ -56,40 +57,63 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: ListView(
-        children: [
-          Text(
-            "드론 비행 허가 신청",
-            style: h5(),
-            textAlign: TextAlign.center,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: ListView(
+            children: [
+              Text(
+                "드론 비행 허가 신청",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.start,
+              ),
+              SizedBox(height: 15),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    CustomDropdownButton(
+                        title: '허가 요청 부대', dropdownList: armyList),
+                    Divider(height: 10),
+                    CustomDropdownButton(
+                        title: '드론 기종', dropdownList: modelList),
+                    Divider(height: 10),
+                    _buildDateTimePicker(),
+                    Divider(height: 10),
+                    CustomTextField(
+                      prefixText: "비행 목적",
+                      hintText: "",
+                      controller: controllerPurpose,
+                    ),
+                    Divider(height: 10),
+                    RequestPageMap(),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FlightAreaPage()),
+                        ).then((value) {
+                          setState(() {
+                            moveToNewLocation();
+                          });
+                        });
+                      },
+                      child: Text("비행반경 설정"),
+                    ),
+                  ],
+                ),
+              ),
+              _buildElevatedButton(),
+            ],
           ),
-          SizedBox(height: 15),
-          CustomDropdownButton(title: '허가 요청 부대', dropdownList: armyList),
-          SizedBox(height: 15),
-          CustomDropdownButton(title: '드론 기종', dropdownList: modelList),
-          _buildDateTimePicker(),
-          CustomTextField(
-            prefixText: "비행 목적",
-            hintText: "",
-            controller: controllerPurpose,
-          ),
-          RequestPageMap(),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FlightAreaPage()),
-              ).then((value) {
-                setState(() {
-                  moveToNewLocation();
-                });
-              });
-            },
-            child: Text("비행반경 설정"),
-          ),
-          _buildElevatedButton(),
-        ],
+        ),
       ),
     );
   }
@@ -108,24 +132,53 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
             ),
           ),
           SizedBox(height: 5),
-          TextButton(
-              onPressed: () {
-                DatePicker.showDateTimePicker(
-                  context,
-                  showTitleActions: true,
-                  minTime: DateTime(2022, 1, 1, 00, 00),
-                  maxTime: DateTime(2023, 12, 31, 23, 59),
-                  onConfirm: (date) {
-                    flightDateTime = date;
-                    setState(() {});
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                  onPressed: () {
+                    DatePicker.showDateTimePicker(
+                      context,
+                      showTitleActions: true,
+                      minTime: DateTime.now(),
+                      maxTime: DateTime(2023, 12, 31, 23, 59),
+                      onConfirm: (date) {
+                        flightDateTimeStart = date;
+                        setState(() {});
+                      },
+                      locale: LocaleType.ko,
+                    );
                   },
-                  locale: LocaleType.ko,
-                );
-              },
-              child: flightDateTime == null
-                  ? Text('기간을 설정하세요', style: TextStyle(color: Colors.blue))
-                  : Text(_dateFormat.format(flightDateTime!).toString(),
-                      style: TextStyle(color: Colors.blue))),
+                  child: flightDateTimeStart == null
+                      ? Text('시작시간을 설정하세요',
+                          style: TextStyle(color: Colors.blue))
+                      : Text(
+                          _dateFormat.format(flightDateTimeStart!).toString(),
+                          style: TextStyle(color: Colors.blue))),
+              Text('~'),
+              TextButton(
+                  onPressed: () {
+                    DatePicker.showDateTimePicker(
+                      context,
+                      showTitleActions: true,
+                      minTime: flightDateTimeStart == null
+                          ? DateTime.now()
+                          : flightDateTimeStart,
+                      maxTime: DateTime(2023, 12, 31, 23, 59),
+                      onConfirm: (date) {
+                        flightDateTimeEnd = date;
+                        setState(() {});
+                      },
+                      locale: LocaleType.ko,
+                    );
+                  },
+                  child: flightDateTimeEnd == null
+                      ? Text('종료시간을 설정하세요',
+                          style: TextStyle(color: Colors.blue))
+                      : Text(_dateFormat.format(flightDateTimeEnd!).toString(),
+                          style: TextStyle(color: Colors.blue))),
+            ],
+          ),
         ],
       ),
     );
@@ -139,7 +192,8 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
           final String uid = FirebaseAuth.instance.currentUser!.uid;
           final String army = dropdownValueArmy;
           final String model = dropdownValueModel;
-          final DateTime? duration = flightDateTime;
+          final DateTime? flightStart = flightDateTimeStart;
+          final DateTime? flightEnd = flightDateTimeEnd;
           final String purpose = controllerPurpose.text;
           final String radius = controllerDistance.text;
           final GeoPoint location = GeoPoint(
@@ -151,7 +205,8 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
             uid: uid,
             army: army,
             model: model,
-            duration: duration,
+            flightStart: flightStart,
+            flightEnd: flightEnd,
             purpose: purpose,
             radius: radius,
             location: location,
@@ -170,7 +225,8 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
     required String uid,
     required String army,
     required String model,
-    required DateTime? duration,
+    required DateTime? flightStart,
+    required DateTime? flightEnd,
     required String purpose,
     required String radius,
     required GeoPoint location,
@@ -183,7 +239,8 @@ class _FlightRequestPageState extends State<FlightRequestPage> {
       'uid': uid,
       'army': army,
       'model': model,
-      'duration': duration,
+      'flightStart': flightStart,
+      'flightEnd': flightEnd,
       'purpose': purpose,
       'radius': radius,
       'location': location,
