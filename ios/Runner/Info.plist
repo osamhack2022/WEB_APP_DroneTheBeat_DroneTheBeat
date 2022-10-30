@@ -15,7 +15,7 @@
 	<key>CFBundleName</key>
 	<string>helloworld</string>
 <key>CFBundleDisplayName</key>
-<string>helloworld</string>
+<string>DPMS</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
