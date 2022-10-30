@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
                 child: Container(
                     width: 200,
                     height: 150,
-                    child: Image.asset('assets/flutter-logo.png')),
+                    child: Image.asset('assets/DPMS_logo.png')),
               ),
             ),
             Padding(

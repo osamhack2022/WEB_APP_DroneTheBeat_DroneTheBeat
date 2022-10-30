@@ -30,9 +30,22 @@ dependencies:
   email_validator: '^2.1.16'
   maps_toolkit: ^2.0.0
   google_maps_utils: ^1.4.0
+  firebase_core_platform_interface: 4.5.1
+  firebase_messaging: ^13.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.2
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/DPMS_logo.png"
+  adaptive_icon_backgorund: "#ffffff"
+  adaptive_icon_foreground: "assets/DPMS_foreground.png"
+
+
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

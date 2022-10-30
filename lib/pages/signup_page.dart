@@ -34,6 +34,7 @@ class _SignupPageState extends State<SignupPage> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Signup Page"),
       ),
@@ -48,7 +49,7 @@ class _SignupPageState extends State<SignupPage> {
                   child: Container(
                       width: 160,
                       height: 120,
-                      child: Image.asset('assets/flutter-logo.png')),
+                      child: Image.asset('assets/DPMS_logo.png')),
                 ),
               ),
               Padding(
