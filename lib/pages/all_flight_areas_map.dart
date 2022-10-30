@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
+import 'flight_area_page.dart';
+
 class AllFlightAreasMap extends StatefulWidget {
   @override
   State<AllFlightAreasMap> createState() => _AllFlightAreasMapState();
@@ -12,6 +14,7 @@ class _AllFlightAreasMapState extends State<AllFlightAreasMap> {
   Set<Marker> _markers = {};
   Set<Circle> _circles = {};
   DateTime date = DateTime.now();
+  DateFormat _dateFormat = DateFormat('y-MM-d H:mm');
 
   Future _addMarkerCircles() async {
     await FirebaseFirestore.instance
@@ -34,9 +37,10 @@ class _AllFlightAreasMapState extends State<AllFlightAreasMap> {
                 position: LatLng(element.data()['location'].latitude,
                     element.data()['location'].longitude),
                 icon: BitmapDescriptor.defaultMarker,
-                infoWindow: const InfoWindow(
-                  title: '주소',
-                  snippet: '비행 반경',
+                infoWindow: InfoWindow(
+                  title: '${element.data()['purpose']}',
+                  snippet:
+                      '${_dateFormat.format(element.data()['flightStart'].toDate())} ~ ${_dateFormat.format(element.data()['flightEnd'].toDate())}',
                 ),
               );
               Circle newCircle = Circle(
@@ -91,11 +95,12 @@ class _AllFlightAreasMapState extends State<AllFlightAreasMap> {
 
           return GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: LatLng(37.5651, 126.98955),
+              target: LatLng(36.6894, 126.5228),
               zoom: 14,
             ),
             markers: _markers,
             circles: _circles,
+            polygons: polygons,
           );
         },
       ),

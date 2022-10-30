@@ -161,9 +161,11 @@ class DetailPage extends StatelessWidget {
                                                       .longitude),
                                               icon: BitmapDescriptor
                                                   .defaultMarker,
-                                              infoWindow: const InfoWindow(
-                                                title: '주소',
-                                                snippet: '비행 반경',
+                                              infoWindow: InfoWindow(
+                                                title:
+                                                    '${snapshot.data['purpose']}',
+                                                snippet:
+                                                    '${_dateFormat.format(snapshot.data['flightStart'].toDate())} ~ ${_dateFormat.format(snapshot.data['flightEnd'].toDate())}',
                                               ),
                                             ),
                                           },
